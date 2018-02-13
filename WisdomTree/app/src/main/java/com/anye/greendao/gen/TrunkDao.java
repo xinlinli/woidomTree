@@ -1,5 +1,6 @@
 package com.anye.greendao.gen;
 
+import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
@@ -8,6 +9,8 @@ import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
+import org.greenrobot.greendao.query.Query;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import com.xinlin.wisdomtree.entity.Trunk;
 
@@ -30,6 +33,9 @@ public class TrunkDao extends AbstractDao<Trunk, Long> {
         public final static Property TreeId = new Property(3, Long.class, "treeId", false, "TREE_ID");
     }
 
+    private DaoSession daoSession;
+
+    private Query<Trunk> tree_TreesQuery;
 
     public TrunkDao(DaoConfig config) {
         super(config);
@@ -37,6 +43,7 @@ public class TrunkDao extends AbstractDao<Trunk, Long> {
     
     public TrunkDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -44,7 +51,7 @@ public class TrunkDao extends AbstractDao<Trunk, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"TRUNK\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"NAME\" TEXT," + // 1: name
+                "\"NAME\" TEXT UNIQUE ," + // 1: name
                 "\"DETAIL\" TEXT," + // 2: detail
                 "\"TREE_ID\" INTEGER);"); // 3: treeId
     }
@@ -106,6 +113,12 @@ public class TrunkDao extends AbstractDao<Trunk, Long> {
     }
 
     @Override
+    protected final void attachEntity(Trunk entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
+    }
+
+    @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
@@ -154,4 +167,18 @@ public class TrunkDao extends AbstractDao<Trunk, Long> {
         return true;
     }
     
+    /** Internal query to resolve the "trees" to-many relationship of Tree. */
+    public List<Trunk> _queryTree_Trees(Long treeId) {
+        synchronized (this) {
+            if (tree_TreesQuery == null) {
+                QueryBuilder<Trunk> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.TreeId.eq(null));
+                tree_TreesQuery = queryBuilder.build();
+            }
+        }
+        Query<Trunk> query = tree_TreesQuery.forCurrentThread();
+        query.setParameter(0, treeId);
+        return query.list();
+    }
+
 }

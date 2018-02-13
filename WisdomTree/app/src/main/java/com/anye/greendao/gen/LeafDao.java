@@ -1,5 +1,6 @@
 package com.anye.greendao.gen;
 
+import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
@@ -8,6 +9,8 @@ import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
+import org.greenrobot.greendao.query.Query;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import com.xinlin.wisdomtree.entity.Leaf;
 
@@ -30,6 +33,7 @@ public class LeafDao extends AbstractDao<Leaf, Long> {
         public final static Property TrunkId = new Property(3, Long.class, "trunkId", false, "TRUNK_ID");
     }
 
+    private Query<Leaf> trunk_TreesQuery;
 
     public LeafDao(DaoConfig config) {
         super(config);
@@ -44,7 +48,7 @@ public class LeafDao extends AbstractDao<Leaf, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"LEAF\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"NAME\" TEXT," + // 1: name
+                "\"NAME\" TEXT UNIQUE ," + // 1: name
                 "\"DETAIL\" TEXT," + // 2: detail
                 "\"TRUNK_ID\" INTEGER);"); // 3: trunkId
     }
@@ -154,4 +158,18 @@ public class LeafDao extends AbstractDao<Leaf, Long> {
         return true;
     }
     
+    /** Internal query to resolve the "trees" to-many relationship of Trunk. */
+    public List<Leaf> _queryTrunk_Trees(Long trunkId) {
+        synchronized (this) {
+            if (trunk_TreesQuery == null) {
+                QueryBuilder<Leaf> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.TrunkId.eq(null));
+                trunk_TreesQuery = queryBuilder.build();
+            }
+        }
+        Query<Leaf> query = trunk_TreesQuery.forCurrentThread();
+        query.setParameter(0, trunkId);
+        return query.list();
+    }
+
 }

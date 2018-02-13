@@ -4,6 +4,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by lixinlin on 2018/2/12.
@@ -12,6 +13,7 @@ import org.greenrobot.greendao.annotation.Generated;
 public class Leaf {
     @Id
     Long id;
+    @Unique
     @Property
     String name;
     @Property

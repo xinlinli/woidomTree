@@ -46,7 +46,7 @@ public class ForestDao extends AbstractDao<Forest, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"FOREST\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"NAME\" TEXT," + // 1: name
+                "\"NAME\" TEXT UNIQUE ," + // 1: name
                 "\"DETAIL\" TEXT);"); // 2: detail
     }
 

@@ -33,6 +33,8 @@ public class TreeDao extends AbstractDao<Tree, Long> {
         public final static Property ForestId = new Property(3, Long.class, "forestId", false, "FOREST_ID");
     }
 
+    private DaoSession daoSession;
+
     private Query<Tree> forest_TreesQuery;
 
     public TreeDao(DaoConfig config) {
@@ -41,6 +43,7 @@ public class TreeDao extends AbstractDao<Tree, Long> {
     
     public TreeDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
+        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -48,7 +51,7 @@ public class TreeDao extends AbstractDao<Tree, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"TREE\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"NAME\" TEXT," + // 1: name
+                "\"NAME\" TEXT UNIQUE ," + // 1: name
                 "\"DETAIL\" TEXT," + // 2: detail
                 "\"FOREST_ID\" INTEGER);"); // 3: forestId
     }
@@ -107,6 +110,12 @@ public class TreeDao extends AbstractDao<Tree, Long> {
         if (forestId != null) {
             stmt.bindLong(4, forestId);
         }
+    }
+
+    @Override
+    protected final void attachEntity(Tree entity) {
+        super.attachEntity(entity);
+        entity.__setDaoSession(daoSession);
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.Unique;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class Forest {
     @Id
     Long id;
+    @Unique
     @Property
     String name;
     @Property
@@ -126,5 +128,10 @@ public class Forest {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getForestDao() : null;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }
