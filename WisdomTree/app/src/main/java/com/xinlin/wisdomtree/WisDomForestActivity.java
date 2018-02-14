@@ -1,5 +1,6 @@
 package com.xinlin.wisdomtree;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -116,13 +117,20 @@ public class WisDomForestActivity extends AppCompatActivity {
                 adapter.setSelectItem(position);
                 tree = adapter.getList().get(position);
                 showSelectedTree(tree);
+                Toast.makeText(WisDomForestActivity.this, "click", Toast.LENGTH_SHORT).show();
 
             }
         });
         lvForest.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
+                tree = adapter.getList().get(position);
+                Intent intent = new Intent(WisDomForestActivity.this, TreeActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("treeName",tree.getName());
+                bundle.putLong("treeId",tree.getId());
+                intent.putExtras(bundle);
+                startActivity(intent);
                 return false;
             }
         });
