@@ -8,39 +8,39 @@
     tools:context="com.xinlin.wisdomtree.WisDomForestActivity">
 
     <EditText
+        android:gravity="center"
+        android:layout_marginTop="10dp"
         android:id="@+id/et_tree_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@null"
+        android:background="@drawable/corner_rectangle_purple"
         android:hint="treeName"
         android:singleLine="true"
         android:textCursorDrawable="@color/colorPrimary" />
 
     <EditText
+        android:layout_marginTop="20dp"
         android:id="@+id/et_tree_detail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@null"
+        android:background="@drawable/corner_rectangle_gray"
         android:hint="......"
         android:textCursorDrawable="@color/colorPrimary" />
     <View
+        android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="2dp"/>
 
-    <ListView
-        android:id="@+id/lv_forest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
-
     <LinearLayout
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/btn_add_tree"
@@ -56,6 +56,12 @@
             android:layout_gravity="center"
             android:text="cut tree" />
     </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_forest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+
 
 
 </LinearLayout>

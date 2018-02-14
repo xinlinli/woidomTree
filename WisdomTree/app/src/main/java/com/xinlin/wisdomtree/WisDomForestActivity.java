@@ -19,6 +19,7 @@ import com.xinlin.wisdomtree.entity.Forest;
 import com.xinlin.wisdomtree.entity.Tree;
 import com.xinlin.wisdomtree.utils.SharedUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,6 +45,7 @@ public class WisDomForestActivity extends AppCompatActivity {
     private TreeDao treeDao;
     private Forest forest;
     private List<Tree> trees;
+    private Tree tree;
     private CommonAdapter<Tree> adapter;
     private DaoMaster daoMaster;
 
@@ -82,7 +84,6 @@ public class WisDomForestActivity extends AppCompatActivity {
         queryTrees();
 
 
-
     }
 
     private void queryTrees() {
@@ -91,10 +92,18 @@ public class WisDomForestActivity extends AppCompatActivity {
         forestDao = daoSession.getForestDao();
         forest = forestDao.queryBuilder().build().unique();
 //        Log.d(TAG, "initData: " + forest.getName() + forest.getDetail() + forest.getId() + forest.getTrees());
-        trees = forest.getTrees();
-        if(adapter !=null){
-            adapter.setList(trees);
-            int a =  adapter.getCount();
+        trees = new ArrayList<>();
+        List<Tree> treesTemp = forest.getTrees();
+        if(forest!=null&&treesTemp!=null){
+            int size = treesTemp.size();
+            for(int i=0;i<size;i++)
+           trees.add(treesTemp.get(size-i-1));
+       }
+
+
+        if (adapter != null) {
+            adapter.setList(this.trees);
+            int a = adapter.getCount();
             adapter.notifyDataSetChanged();
         }
 
@@ -105,9 +114,16 @@ public class WisDomForestActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 adapter.setSelectItem(position);
+                tree = adapter.getList().get(position);
+                showSelectedTree(tree);
 
             }
         });
+    }
+
+    private void showSelectedTree(Tree tree) {
+        etTreeName.setText(tree.getName());
+        etTreeDetail.setText(tree.getDetail());
     }
 
 
@@ -115,22 +131,32 @@ public class WisDomForestActivity extends AppCompatActivity {
     public void onBtnAddTreeClicked() {
         String treeName = etTreeName.getText().toString();
         String treeDetail = etTreeDetail.getText().toString();
-        if(treeName !=null && !"".equals(treeName)){
-            Tree tree = new Tree(null, treeName, treeDetail, forest.getId());
+        if (treeName != null && !"".equals(treeName)) {
+            tree = new Tree(null, treeName, treeDetail, forest.getId());
             try {
-                treeDao.insert(tree);
+                treeDao.insertOrReplace(tree);
+                adapter.setSelectItem(-1);
                 queryTrees();
 
             } catch (Exception e) {
                 etTreeName.setText("name already exist");
-            } 
-        }else{
+            }
+        } else {
             Toast.makeText(this, "name empty", Toast.LENGTH_SHORT).show();
         }
-        
+
     }
 
     @OnClick(R.id.btn_delete_tree)
     public void onViewClicked() {
+        if (tree != null) {
+            try {
+                treeDao.delete(tree);
+                adapter.setSelectItem(-1);
+                queryTrees();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
