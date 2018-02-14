@@ -119,6 +119,13 @@ public class WisDomForestActivity extends AppCompatActivity {
 
             }
         });
+        lvForest.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                return false;
+            }
+        });
     }
 
     private void showSelectedTree(Tree tree) {

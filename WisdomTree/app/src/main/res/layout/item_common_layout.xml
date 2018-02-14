@@ -4,8 +4,9 @@
     android:layout_margin="8dp"
     android:background="@drawable/corner_rectangle_green"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="50dp">
     <TextView
+        android:textSize="20sp"
         android:textColor="@color/colorGreen"
         android:id="@+id/tv_tree_name"
         android:layout_width="match_parent"
@@ -15,6 +16,7 @@
         android:layout_marginRight="20dp" />
 
     <TextView
+        android:textSize="18sp"
         android:id="@+id/tv_tree_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
